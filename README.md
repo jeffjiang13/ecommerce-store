@@ -1,21 +1,21 @@
 <div align="center" id="top">
-  <img src="./.github/app.gif" alt="Ecommerce" />
+  <img src="./.github/app.gif" alt="Ecommerce-store" />
 
   &#xa0;
 
   <!-- <a href="https://ecommerce.netlify.app">Demo</a> -->
 </div>
 
-<h1 align="center">Ecommerce</h1>
+<h1 align="center">Ecommerce-store</h1>
 
 <p align="center">
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/jeffjiang13/ecommerce?color=56BEB8">
+  <img alt="Github top language" src="https://img.shields.io/github/languages/top/jeffjiang13/ecommerce-store?color=56BEB8">
 
-  <img alt="Github language count" src="https://img.shields.io/github/languages/count/jeffjiang13/ecommerce?color=56BEB8">
+  <img alt="Github language count" src="https://img.shields.io/github/languages/count/jeffjiang13/ecommerce-store?color=56BEB8">
 
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/jeffjiang13/ecommerce?color=56BEB8">
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/jeffjiang13/ecommerce-store?color=56BEB8">
 
-  <img alt="License" src="https://img.shields.io/github/license/jeffjiang13/ecommerce?color=56BEB8">
+  <img alt="License" src="https://img.shields.io/github/license/jeffjiang13/ecommerce-store?color=56BEB8">
 </p>
 
 <p align="center">
@@ -32,10 +32,10 @@
 
 ## :dart: About ##
 
-An e-commerce website for an online shoe store. The website includes a product catalog, contact page, and about page.
+An e-commerce website for an online shoe store. The website includes a Stripe checkout, product catalog, contact page, and about page.
 
 ## :sparkles: Features ##
-
+:heavy_check_mark: Responsive Stripe checkout;\
 :heavy_check_mark: Responsive product catalog;\
 :heavy_check_mark: Contact page with email address;\
 :heavy_check_mark: About page with store information;
@@ -58,7 +58,7 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) an
 
 ```bash
 # Clone this project
-$ git clone https://github.com/jeffjiang13/ecommerce
+$ git clone https://github.com/jeffjiang13/ecommerce-store
 
 # Access
 $ cd ecommerce
