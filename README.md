@@ -1,12 +1,12 @@
 <div align="center" id="top">
-  <img src="./.github/app.gif" alt="Ecommerce-store" />
+  <img src="client/public/logo.svg" alt="Ecommerce-store" />
 
   &#xa0;
 
-  <!-- <a href="https://ecommerce.netlify.app">Demo</a> -->
+  <a href="https://jj-ecommerce-store.vercel.app/">Demo</a>
 </div>
 
-<h1 align="center">Ecommerce-store</h1>
+<h1 align="center">Ecommerce Store</h1>
 
 <p align="center">
   <img alt="Github top language" src="https://img.shields.io/github/languages/top/jeffjiang13/ecommerce-store?color=56BEB8">
