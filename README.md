@@ -1,3 +1,6 @@
+<br />
+<br />
+
 <div align="center" id="top">
   <img src="client/public/logo.svg" alt="Ecommerce-store" />
 
