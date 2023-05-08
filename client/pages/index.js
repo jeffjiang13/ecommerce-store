@@ -4,7 +4,7 @@ import Wrapper from "@/components/Wrapper";
 import { fetchDataFromApi } from "@/utils/api";
 export default function Home({ products }) {
     return (
-        <main>
+        <main className="mt-10">
             <HeroBanner />
             <Wrapper>
                 {/* heading and paragaph start */}
