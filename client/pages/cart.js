@@ -15,6 +15,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(false);
     const { cartItems } = useSelector((state) => state.cart);
     const loggedInUser = useSelector((state) => state.auth.user);
+    console.log(loggedInUser);
 
     const subTotal = useMemo(() => {
         return cartItems.reduce(
@@ -27,9 +28,12 @@ const Cart = () => {
         try {
             setLoading(true);
             const stripe = await stripePromise;
+            console.log(loggedInUser);
             const res = await makePaymentRequest("/api/orders", {
                 products: cartItems,
                 userName: loggedInUser.username, // Add user's username
+                userId: loggedInUser.id, // Add user's ID
+
 
             });
             await stripe.redirectToCheckout({

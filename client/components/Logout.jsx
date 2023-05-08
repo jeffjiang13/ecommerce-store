@@ -8,6 +8,7 @@
     const router = useRouter();
 
     const handleLogout = () => {
+
       dispatch(logoutUser());
       router.push('/');
     };

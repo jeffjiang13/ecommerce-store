@@ -5,7 +5,6 @@ const OrderHistory = ({ userId }) => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const { data } = fetchDataFromApi("/api/orders?populate=*");
     console.log(data);
     const getUserOrders = async () => {
       const userOrders = await fetchUserOrders(userId);

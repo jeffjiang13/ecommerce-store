@@ -9,45 +9,58 @@ import {
 } from "../store/authSlice";
 
 export const registerUser = (username, email, password) => async (dispatch) => {
-    try {
-        console.log("registerUser action called"); // Add this line
+  try {
+    const response = await register(username, email, password);
+    localStorage.setItem("token", response.data.jwt);
+    dispatch(loginSuccess(response.data.user));
 
-      const response = await register(username, email, password);
-      console.log("Response:", response); // Add this line
-      dispatch(registerSuccess());
-      dispatch(setMessage(response.data.message));
-    } catch (error) {
-      console.log("Error:", error); // Add this line
+    dispatch(registerSuccess(response.data.user));
 
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
 
-      dispatch(setMessage(message));
-    }
-  };
+    // Return the user and jwt token
+    return { user: response.data.user, jwt: response.data.jwt };
+  } catch (error) {
+    const message =
+      (error.response &&
+        error.response.data &&
+        error.response.data.error &&
+        error.response.data.error.message) ||
+      error.message ||
+      error.toString();
+
+    dispatch(setMessage(message));
+
+    // Return null in case of an error
+    return null;
+  }
+};
+
 
 
 // src/actions/authActions.js
 export const loginUser = ({ identifier, password }) => async (dispatch) => {
-    try {
-      const response = await login(identifier, password);
-      localStorage.setItem("token", response.data.jwt);
-      dispatch(loginSuccess(response.data.user));
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
+  try {
+    const response = await login(identifier, password);
+    localStorage.setItem("token", response.data.jwt);
+    dispatch(loginSuccess(response.data.user));
+    console.log(response)
+    // Return the user and jwt token
+    return { user: response.data.user, jwt: response.data.jwt };
+  } catch (error) {
+    const message =
+      (error.response &&
+        error.response.data &&
+        error.response.data.message) ||
+      error.message ||
+      error.toString();
 
-      dispatch(setMessage(message));
-    }
-  };
+    dispatch(setMessage(message));
+
+    // Return null in case of an error
+    return null;
+  }
+};
+
 
 
 export const logoutUser = () => (dispatch) => {
