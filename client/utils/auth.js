@@ -1,30 +1,18 @@
-// src/utils/auth.js
+const isBrowser = () => typeof window !== "undefined";
 
-function isClientSide() {
-    return typeof window !== "undefined";
-  }
+export const saveAuthToLocalStorage = (user, jwt) => {
+  if (!isBrowser()) return;
+  localStorage.setItem("auth", JSON.stringify({ user, jwt }));
+};
 
-  export const saveAuthToLocalStorage = (user, jwt) => {
-    localStorage.setItem("jwt", jwt);
-    localStorage.setItem("user", JSON.stringify(user));
-  };
+export const getAuthFromLocalStorage = () => {
+  if (!isBrowser()) return null;
+  const auth = localStorage.getItem("auth");
+  if (!auth) return null;
+  return JSON.parse(auth);
+};
 
-  export const removeAuthFromLocalStorage = () => {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("user");
-  };
-
-  export const getAuthFromLocalStorage = () => {
-    if (!isClientSide()) {
-      return null;
-    }
-
-    const jwt = localStorage.getItem("jwt");
-    const user = localStorage.getItem("user");
-
-    if (jwt && user) {
-      return { jwt, user: JSON.parse(user) };
-    }
-
-    return null;
-  };
+export const removeAuthFromLocalStorage = () => {
+  if (!isBrowser()) return;
+  localStorage.removeItem("auth");
+};

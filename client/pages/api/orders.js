@@ -2,21 +2,24 @@
 import { API_URL, STRAPI_API_TOKEN } from "../../utils/urls";
 
 
-export const fetchUserOrders = async (userId) => {
-    const options = {
+async function fetchUserOrders(username) {
+  try {
+    const res = await fetch(`${API_URL}/orders?user.username=${username}`, {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + STRAPI_API_TOKEN,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
       },
-    };
+    });
 
-    try {
-      const res = await fetch(`${API_URL}/api/orders?user.id=${userId}`, options);
-      const data = await res.json();
-      console.log(data)
-      return Array.isArray(data) ? data : [];
-    } catch (error) {
-      console.error('Fetch user orders error:', error);
-      throw error;
+    if (!res.ok) {
+      throw new Error("Failed to fetch user orders.");
     }
-  };
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Error fetching orders for username:", username, err);
+    throw err;
+  }
+}

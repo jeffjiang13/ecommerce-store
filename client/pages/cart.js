@@ -4,6 +4,8 @@ import Link from "next/link";
 import Wrapper from "@/components/Wrapper";
 import CartItem from "@/components/CartItem";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { clearCart } from "@/store/cartSlice";
 
 import { makePaymentRequest } from "@/utils/api";
 import { loadStripe } from "@stripe/stripe-js";
@@ -15,7 +17,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(false);
     const { cartItems } = useSelector((state) => state.cart);
     const loggedInUser = useSelector((state) => state.auth.user);
-    console.log(loggedInUser);
+    const dispatch = useDispatch();
 
     const subTotal = useMemo(() => {
         return cartItems.reduce(
@@ -24,26 +26,35 @@ const Cart = () => {
         );
     }, [cartItems]);
 
-    const handlePayment = async () => {
-        try {
-            setLoading(true);
-            const stripe = await stripePromise;
-            console.log(loggedInUser);
-            const res = await makePaymentRequest("/api/orders", {
-                products: cartItems,
-                userName: loggedInUser.username, // Add user's username
-                userId: loggedInUser.id, // Add user's ID
+const handlePayment = async () => {
+    try {
+        setLoading(true);
+        const stripe = await stripePromise;
+        console.log(loggedInUser);
+        const res = await makePaymentRequest("/api/orders", {
+            products: cartItems,
+            userName: loggedInUser.username, // Add user's username
+            userId: loggedInUser.id, // Add user's ID
+        });
 
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: res.stripeSession.id,
+        });
 
-            });
-            await stripe.redirectToCheckout({
-                sessionId: res.stripeSession.id,
-            });
-        } catch (error) {
-            setLoading(false);
-            console.log(error);
+        setLoading(false);
+
+        if (error) {
+            console.error("Payment failed:", error);
+        } else {
+            // Clear cart only if payment was successful
+            dispatch(clearCart());
         }
-    };
+    } catch (error) {
+        setLoading(false);
+        console.log(error);
+    }
+};
+
 
     return (
         <div className="w-full md:py-20">
