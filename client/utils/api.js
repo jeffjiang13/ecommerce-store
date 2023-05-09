@@ -60,20 +60,3 @@ export const logout = () => {
   localStorage.removeItem("token");
 };
 // ... other imports and functions
-
-// Add this function to your existing API utility file
-export async function fetchUserOrders(username) {
-  try {
-    const res = await fetchDataFromApi(`/api/orders?user.username=${username}`);
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch user orders.");
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    console.error("Error fetching orders for username:", username, err);
-    throw err;
-  }
-}

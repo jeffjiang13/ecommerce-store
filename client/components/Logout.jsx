@@ -14,7 +14,8 @@
     };
 
     return (
-      <button onClick={handleLogout} className="bg-white text-black py-2 px-4 rounded mr-40">
+      <button onClick={handleLogout} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
+
         Log Out
       </button>
     );

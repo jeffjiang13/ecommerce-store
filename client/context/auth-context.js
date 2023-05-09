@@ -10,39 +10,40 @@ const AuthContext = createContext();
 const AuthProvider = (props) => {
   const [authState, setAuthState] = useState(() => {
     return {
+      isLoading: true,
       isAuthenticated: false,
       user: null,
       jwt: null,
     };
   });
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const authFromLocal = getAuthFromLocalStorage();
     if (authFromLocal) {
       loginUser(authFromLocal.user, authFromLocal.jwt);
+    } else {
+      setAuthState((prevState) => ({ ...prevState, isLoading: false }));
     }
-    setLoading(false);
   }, []);
 
   const loginUser = (user, jwt) => {
     saveAuthToLocalStorage(user, jwt);
-    setAuthState({ isAuthenticated: true, user, jwt });
+    setAuthState({ isLoading: false, isAuthenticated: true, user, jwt });
   };
 
   const logoutUser = () => {
     removeAuthFromLocalStorage();
-    setAuthState({ isAuthenticated: false, user: null, jwt: null });
+    setAuthState({ isLoading: false, isAuthenticated: false, user: null, jwt: null });
   };
 
   return (
     <AuthContext.Provider
-      value={{ ...authState, loginUser, logoutUser, loading }}
+      value={{ ...authState, loginUser, logoutUser }}
       {...props}
     />
   );
 };
+
 
 export const useAuth = () => {
   return useContext(AuthContext);

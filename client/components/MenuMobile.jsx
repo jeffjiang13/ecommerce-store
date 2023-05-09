@@ -80,7 +80,7 @@ const MenuMobile = ({
           <>
             <li className="py-4 px-5 border-b">
               <Link href="/order-history" onClick={() => setMobileMenu(false)}>
-                Order History
+                Orders
               </Link>
             </li>
             <li className="py-4 px-5 border-b">

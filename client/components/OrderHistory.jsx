@@ -1,74 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { fetchDataFromApi } from "@/utils/api";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
+// OrderHistory Component
 const OrderHistory = () => {
-  console.log("Loading OrderHistory component");
-
   const [orderHistory, setOrderHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const authToken = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.user && state.auth.user.id);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  const getOrderHistory = async (authToken, userId) => {
-    try {
-      const response = await axios.get(`http://localhost:1339/api/orders`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-        params: {
-          users_permissions_user: userId,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching order history:", error);
-      return [];
-    }
-  };
+  const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchData = async () => {
-      console.log("Authenticated:", isAuthenticated);
-      console.log("User ID:", userId);
-      console.log("Auth Token:", authToken);
+    fetchOrders();
+  }, []);
 
-      if (isAuthenticated && userId && authToken) {
-        const orders = await getOrderHistory(authToken, userId);
-        console.log("Fetched Orders:", orders);
-        setOrderHistory(orders);
-      }
-      setLoading(false);
-    };
+  const fetchOrders = async () => {
+    const { data } = await fetchDataFromApi("/api/orders?populate=*");
+    setOrderHistory(data);
+  }
 
-    fetchData();
-  }, [userId, authToken, isAuthenticated]);
-
-  if (loading) {
+  if (!currentUser) {
     return <div>Loading...</div>;
   }
 
+  const filteredOrders = orderHistory.filter(order => order.attributes.userName === currentUser.username);
+
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-6">Orders</h1>
-      {orderHistory.length === 0 ? (
-        <h2 className="text-lg">You don't have any orders yet.</h2>
-      ) : (
-        orderHistory.map((order) => (
-          <div
-            key={order.id}
-            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-          >
-            <h2 className="text-xl font-bold mb-2">Order ID: {order.id}</h2>
-            <p className="mb-4">Date: {order.created_at}</p>
-            {/* Add more order details as needed */}
+    <div className="orders-container">
+      {Array.isArray(filteredOrders) && filteredOrders.length > 0 ? (
+        filteredOrders.map((order) => (
+          <div key={order.id} className='order-box mb-4 p-4 bg-gray-200 rounded-lg shadow'>
+            <h3 className='mb-2'>{`Order ID: ${order.attributes.stripeId}`}</h3>
+            <ul>
+              {order.attributes.products.map((product) => (
+                <li key={product.id}>
+                  {`Product name: ${product.attributes.name}, Quantity: ${product.quantity}, Price: $${product.attributes.price}`}
+                </li>
+              ))}
+            </ul>
           </div>
         ))
+      ) : (
+        <div className="no-orders-message text-center mt-4">
+          <h3>You don't have any orders yet.</h3>
+        </div>
       )}
     </div>
   );
-};
+}
 
 export default OrderHistory;
