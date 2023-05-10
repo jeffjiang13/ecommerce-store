@@ -12,6 +12,7 @@ const initialState = user
     const { type, payload } = action;
 
     switch (type) {
+
       case REGISTER_SUCCESS:
         return {
           ...state,
@@ -22,6 +23,7 @@ const initialState = user
           ...state,
           isLoggedIn: true,
           user: payload,
+          token: payload.jwt,
         };
       case LOGOUT:
         return {

@@ -32,7 +32,6 @@ function App({ Component, pageProps }) {
   if (auth.isLoading) {
     return <div>Loading...</div>;
   }
-  console.log("Current page component:", Component.name); // Add this line
 
   return (
     <>

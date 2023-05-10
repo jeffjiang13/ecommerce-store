@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../actions/authActions";
 import { useRouter } from "next/router";
 import { AuthContext } from "../context/auth-context";
+import { setToken } from "../store/authSlice";
 
 const Login = () => {
   const [identifier, setIdentifier] = useState("");
@@ -19,9 +20,12 @@ const Login = () => {
 
     if (response && response.user && response.jwt) {
       loginUserContext(response.user, response.jwt);
+      dispatch(setToken(response.jwt)); // Change this line
+
     } else {
       setErrorMessage("Login failed. Please check your credentials.");
     }
+
   };
 
   return (

@@ -5,19 +5,20 @@ import AccountIcon from "./AccountIcon";
 
 const Profile = () => {
   const currentUser = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  console.log(token);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-  useEffect(() => {
-    if (currentUser && currentUser.profileImage) {
-      const imgUrl = currentUser.profileImage.provider === 'cloudinary'
+  const [previewUrl, setPreviewUrl] = useState(
+    currentUser?.profileImage
+      ? currentUser.profileImage.provider === "cloudinary"
         ? currentUser.profileImage.url
-        : `${process.env.NEXT_PUBLIC_API_URL}${currentUser.profileImage.url}`;
-
-      setPreviewUrl(imgUrl);
-    }
-  }, [currentUser]);
-
-
+        : `${process.env.NEXT_PUBLIC_API_URL}${currentUser.profileImage.url}`
+      : ""
+  );
+  console.log("User object:", currentUser);
+  console.log("Profile image data:", currentUser.profileImage);
+  console.log("Image URL:", previewUrl);
+  console.log("Token from Redux store:", token);
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -44,38 +45,42 @@ const Profile = () => {
     formData.append("files", selectedFile);
 
     try {
+        console.log("Token in request headers (POST):", `Bearer ${token}`);
+
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/upload`,
+        `http://localhost:1339/upload`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+      console.log("Token in request headers (PUT):", `Bearer ${token}`);
 
       const userUpdateResponse = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users/${currentUser.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/${currentUser.id}`,
         { profileImage: response.data[0].id },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       const uploadedImage = response.data[0];
-      const imageUrl = uploadedImage.provider === 'cloudinary'
-        ? uploadedImage.url
-        : `${process.env.NEXT_PUBLIC_API_URL}${uploadedImage.url}`;
+      const imageUrl =
+        uploadedImage.provider === "cloudinary"
+          ? uploadedImage.url
+          : `${process.env.NEXT_PUBLIC_API_URL}${uploadedImage.url}`;
       setPreviewUrl(imageUrl);
-
     } catch (error) {
       console.error("Image upload failed:", error);
     }
   };
+
 
 
   return (
@@ -86,7 +91,7 @@ const Profile = () => {
             <img
               src={previewUrl}
               alt="Profile"
-              className="w-full h-full object-cover" // Update the className
+              className="w-full h-full object-cover"
               width="170"
               height="170"
             />
@@ -115,8 +120,7 @@ const Profile = () => {
       </div>
       <div className="mt-4">
         <p className="font-semibold">Email:</p>
-        <p>{currentUser
- ? currentUser.email : "Not logged in"}</p>
+        <p>{currentUser ? currentUser.email : "Not logged in"}</p>
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isLoggedIn: false,
   user: null,
+  token: null, // Add this line to store the token
+
   message: "",
 };
 
@@ -11,6 +13,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
     registerSuccess: (state) => {
       state.isLoggedIn = true;
     },
@@ -32,6 +37,8 @@ const authSlice = createSlice({
 });
 
 export const {
+  setToken,
+
   registerSuccess,
   loginSuccess,
   logout,

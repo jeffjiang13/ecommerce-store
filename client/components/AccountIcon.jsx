@@ -1,17 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const AccountIcon = () => (
-  <svg
-    aria-hidden="true"
-    focusable="false"
-    viewBox="0 0 24 24"
-    role="img"
-    width="150px"
-    height="150px"
-    fill="none"
-    data-var="glyph"
-    style={{ display: 'inline-block' }}
-  >
+const AccountIcon = () => {
+  const [iconDimensions, setIconDimensions] = useState({
+    width: '100%',
+    maxWidth: '150px'
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const windowWidth = window.innerWidth;
+
+      if (windowWidth <= 767) {
+        setIconDimensions({
+          width: '100%',
+          maxWidth: '150px'
+        });
+      } else {
+        setIconDimensions({
+          width: '100%',
+          maxWidth: '150px'
+        });
+      }
+    };
+
+    handleResize(); // Call once on initial render
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 24 24"
+      role="img"
+      fill="none"
+      data-var="glyph"
+      style={{ ...iconDimensions, display: 'inline-block' }}
+    >
     <path
       stroke="currentColor"
       strokeWidth="2"
@@ -24,6 +50,7 @@ const AccountIcon = () => (
       clipRule="evenodd"
     ></path>
   </svg>
-);
+  );
+}
 
 export default AccountIcon;
