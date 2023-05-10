@@ -41,7 +41,6 @@ export const registerUser = (username, email, password) => async (dispatch) => {
 
 
 
-
 // src/actions/authActions.js
 export const loginUser = ({ identifier, password }) => async (dispatch) => {
   try {
@@ -55,10 +54,15 @@ export const loginUser = ({ identifier, password }) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     });
-    dispatch(setUser(userResponse.data));
+
+    console.log('userResponse.data:', userResponse.data); // Add this line to log the user data
+
+    // Add this line to include the profileImage in the setUser dispatch call
+    const updatedUser = { ...userResponse.data, profileImage: response.data.user.profileImage };
+    dispatch(setUser(updatedUser));
 
     // Return the user and jwt token
-    return { user: userResponse.data, jwt: response.data.jwt };
+    return { user: updatedUser, jwt: response.data.jwt };
   } catch (error) {
     const message =
       (error.response &&
@@ -70,11 +74,12 @@ export const loginUser = ({ identifier, password }) => async (dispatch) => {
 
     dispatch(setMessage(message));
 
-
     // Return null in case of an error
     return null;
   }
 };
+
+
 
 
 
