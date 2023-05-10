@@ -1,40 +1,50 @@
-import React, { useState, useContext } from "react";
-import { useDispatch } from "react-redux";
-import { loginUser } from "../actions/authActions";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, clearAuthMessage } from "../actions/authActions";
 import { useRouter } from "next/router";
-import { AuthContext } from "../context/auth-context";
+// import { AuthContext } from "../context/auth-context";
 import { setToken } from "../store/authSlice";
+
 
 const Login = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
-  const { loginUser: loginUserContext } = useContext(AuthContext);
+  // const { loginUser: loginUserContext } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
+  const message = useSelector((state) => state.auth.message);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(clearAuthMessage());
 
     const response = await dispatch(loginUser({ identifier, password }));
 
+    // Check for the response from loginUser
     if (response && response.user && response.jwt) {
-      loginUserContext(response.user, response.jwt);
-      dispatch(setToken(response.jwt)); // Change this line
+      // loginUserContext(response.user, response.jwt);
+      dispatch(setToken(response.jwt));
 
+      setErrorMessage(""); // Clear the error message
+      router.push("/"); // Redirect the user to the home page
     } else {
-      setErrorMessage("Login failed. Please check your credentials.");
+      // Instead of setting a hardcoded error message, use the setMessage from your actions
+      if (message) {
+        console.log(message);
+        setErrorMessage(message);
+      } else {
+        setErrorMessage("Login failed. Please check your credentials.");
+      }
     }
-
   };
+
+
+
 
   return (
     <div className="flex flex-col items-center">
-         {errorMessage && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-4" role="alert">
-          <span className="block sm:inline">{errorMessage}</span>
-        </div>
-      )}
+
       <h2 className="text-3xl mb-6">Login</h2>
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <div className="mb-4">
@@ -77,7 +87,9 @@ const Login = () => {
         </div>
       </form>
       <br />
-
+      {errorMessage && errorMessage !== "" && (
+        <p className="text-red-500 mb-4 text-center">{errorMessage}</p>
+      )}
       Don't have an account? Sign up{" "}
       <p
         className="text-black hover:text-gray-500 text-sm font-bold cursor-pointer"

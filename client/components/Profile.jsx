@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import AccountIcon from "./AccountIcon";
+import { updateUser, setUser } from "@/store/authSlice";
 
-const Profile = () => {
+const Profile = ({ token }) => {
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
-  const token = useSelector((state) => state.auth.token);
-  console.log(token);
+
   const [selectedFile, setSelectedFile] = useState(null);
+  const [userData, setUserData] = useState(currentUser);
   const [previewUrl, setPreviewUrl] = useState(
     currentUser?.profileImage
       ? currentUser.profileImage.provider === "cloudinary"
@@ -15,10 +17,48 @@ const Profile = () => {
         : `${process.env.NEXT_PUBLIC_API_URL}${currentUser.profileImage.url}`
       : ""
   );
-  console.log("User object:", currentUser);
-  console.log("Profile image data:", currentUser.profileImage);
-  console.log("Image URL:", previewUrl);
-  console.log("Token from Redux store:", token);
+    console.log("previewUrl",previewUrl)
+    console.log('userData',userData)
+    console.log('currentUser',currentUser)
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${currentUser.id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      setUserData(response.data);
+
+      if (response.data.profileImage) {
+        setPreviewUrl(
+          response.data.profileImage.provider === 'cloudinary'
+            ? response.data.profileImage.url
+            : `${process.env.NEXT_PUBLIC_API_URL}${response.data.profileImage.url}`
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (currentUser?.profileImage) {
+      setPreviewUrl(
+        currentUser.profileImage.provider === "cloudinary"
+          ? currentUser.profileImage.url
+          : `${process.env.NEXT_PUBLIC_API_URL}${currentUser.profileImage.url}`
+      );
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [currentUser]);
+
+  // useEffect(() => {
+  //   if (currentUser && token) {
+  //     fetchUserData();
+  //   }
+  // }, [currentUser, token, currentUser?.id, []]);
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -35,52 +75,53 @@ const Profile = () => {
     }
   };
 
-  const handleProfileImageUpload = async () => {
+  const uploadImage = async (imageFile) => {
+    const formData = new FormData();
+    formData.append("files", imageFile);
+
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const userUpdateResponse = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/${currentUser.id}`,
+        { profileImage: response.data[0].id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const updatedUser = {
+        ...currentUser,
+        profileImage: response.data[0],
+      };
+      setUserData(updatedUser);
+      dispatch(updateUser(updatedUser));
+
+      setPreviewUrl(
+        response.data[0].provider === 'cloudinary'
+          ? response.data[0].url
+          : `${process.env.NEXT_PUBLIC_API_URL}${response.data[0].url}`
+      );
+
+    } catch (err) {
+      console.log("Image upload error:", err);
+    }
+  };
+
+  const handleProfileImageUpload = () => {
     if (!selectedFile) {
       alert("Please select a file first");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("files", selectedFile);
-
-    try {
-        console.log("Token in request headers (POST):", `Bearer ${token}`);
-
-      const response = await axios.post(
-        `http://localhost:1339/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Token in request headers (PUT):", `Bearer ${token}`);
-
-      const userUpdateResponse = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/${currentUser.id}`,
-        { profileImage: response.data[0].id },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const uploadedImage = response.data[0];
-      const imageUrl =
-        uploadedImage.provider === "cloudinary"
-          ? uploadedImage.url
-          : `${process.env.NEXT_PUBLIC_API_URL}${uploadedImage.url}`;
-      setPreviewUrl(imageUrl);
-    } catch (error) {
-      console.error("Image upload failed:", error);
-    }
+    uploadImage(selectedFile);
   };
-
 
 
   return (

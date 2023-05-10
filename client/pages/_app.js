@@ -8,30 +8,29 @@ import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "@/store/store";
 
-import { AuthProvider, useAuth } from "../context/auth-context";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
-      <App Component={Component} pageProps={pageProps} />
-    </AuthProvider>
+    <ReduxProvider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App Component={Component} pageProps={pageProps} />
+      </PersistGate>
+    </ReduxProvider>
   );
 }
+
 function App({ Component, pageProps }) {
-  const auth = useAuth();
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const router = useRouter();
 
   useEffect(() => {
-    if (!auth.isLoading && !auth.isAuthenticated && pageProps.requiresAuth) {
+    if (!isLoggedIn && pageProps.requiresAuth) {
       router.push("/login");
     }
-  }, [auth.isLoading, auth.isAuthenticated, pageProps.requiresAuth, router]);
-
-  if (auth.isLoading) {
-    return <div>Loading...</div>;
-  }
+  }, [isLoggedIn, pageProps.requiresAuth, router]);
 
   return (
     <>
@@ -51,13 +50,9 @@ function App({ Component, pageProps }) {
           rel="stylesheet"
         />
       </Head>
-      <ReduxProvider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </PersistGate>
-      </ReduxProvider>
+      <Header />
+      <Component {...pageProps} />
+      <Footer />
     </>
   );
 }

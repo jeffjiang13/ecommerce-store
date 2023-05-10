@@ -1,52 +1,52 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-import {
-  saveAuthToLocalStorage,
-  removeAuthFromLocalStorage,
-  getAuthFromLocalStorage,
-} from "../utils/auth";
+// import React, { createContext, useState, useEffect, useContext } from "react";
+// import {
+//   saveAuthToLocalStorage,
+//   removeAuthFromLocalStorage,
+//   getAuthFromLocalStorage,
+// } from "../utils/auth";
 
-const AuthContext = createContext();
+// const AuthContext = createContext();
 
-const AuthProvider = (props) => {
-  const [authState, setAuthState] = useState(() => {
-    return {
-      isLoading: true,
-      isAuthenticated: false,
-      user: null,
-      jwt: null,
-    };
-  });
+// const AuthProvider = (props) => {
+//   const [authState, setAuthState] = useState(() => {
+//     return {
+//       isLoading: true,
+//       isAuthenticated: false,
+//       user: null,
+//       jwt: null,
+//     };
+//   });
 
-  useEffect(() => {
-    const authFromLocal = getAuthFromLocalStorage();
-    if (authFromLocal) {
-      loginUser(authFromLocal.user, authFromLocal.jwt);
-    } else {
-      setAuthState((prevState) => ({ ...prevState, isLoading: false }));
-    }
-  }, []);
+//   useEffect(() => {
+//     const authFromLocal = getAuthFromLocalStorage();
+//     if (authFromLocal) {
+//       loginUser(authFromLocal.user, authFromLocal.jwt);
+//     } else {
+//       setAuthState((prevState) => ({ ...prevState, isLoading: false }));
+//     }
+//   }, []);
 
-  const loginUser = (user, jwt) => {
-    saveAuthToLocalStorage(user, jwt);
-    setAuthState({ isLoading: false, isAuthenticated: true, user, jwt });
-  };
+//   const loginUser = (user, jwt) => {
+//     saveAuthToLocalStorage(user, jwt);
+//     setAuthState({ isLoading: false, isAuthenticated: true, user, jwt });
+//   };
 
-  const logoutUser = () => {
-    removeAuthFromLocalStorage();
-    setAuthState({ isLoading: false, isAuthenticated: false, user: null, jwt: null });
-  };
+//   const logoutUser = () => {
+//     removeAuthFromLocalStorage();
+//     setAuthState({ isLoading: false, isAuthenticated: false, user: null, jwt: null });
+//   };
 
-  return (
-    <AuthContext.Provider
-      value={{ ...authState, loginUser, logoutUser }}
-      {...props}
-    />
-  );
-};
+//   return (
+//     <AuthContext.Provider
+//       value={{ ...authState, loginUser, logoutUser }}
+//       {...props}
+//     />
+//   );
+// };
 
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+// export const useAuth = () => {
+//   return useContext(AuthContext);
+// };
 
-export { AuthContext, AuthProvider };
+// export { AuthContext, AuthProvider };

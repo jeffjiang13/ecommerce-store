@@ -6,8 +6,11 @@ import {
   logout,
   setMessage,
   clearMessage,
+  setUser,
 } from "../store/authSlice";
+import axios from 'axios';
 
+// src/actions/authActions.js
 export const registerUser = (username, email, password) => async (dispatch) => {
   try {
     const response = await register(username, email, password);
@@ -16,10 +19,11 @@ export const registerUser = (username, email, password) => async (dispatch) => {
 
     dispatch(registerSuccess(response.data.user));
 
-
     // Return the user and jwt token
     return { user: response.data.user, jwt: response.data.jwt };
   } catch (error) {
+    console.error("Error:", error.response); // Add this line to log the error response
+
     const message =
       (error.response &&
         error.response.data &&
@@ -37,24 +41,35 @@ export const registerUser = (username, email, password) => async (dispatch) => {
 
 
 
+
 // src/actions/authActions.js
 export const loginUser = ({ identifier, password }) => async (dispatch) => {
   try {
     const response = await login(identifier, password);
     localStorage.setItem("token", response.data.jwt);
     dispatch(loginSuccess(response.data.user));
-    console.log(response)
+
+    // Fetch user data after login
+    const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${response.data.user.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    dispatch(setUser(userResponse.data));
+
     // Return the user and jwt token
-    return { user: response.data.user, jwt: response.data.jwt };
+    return { user: userResponse.data, jwt: response.data.jwt };
   } catch (error) {
     const message =
       (error.response &&
         error.response.data &&
-        error.response.data.message) ||
+        error.response.data.error &&
+        error.response.data.error.message) ||
       error.message ||
       error.toString();
 
     dispatch(setMessage(message));
+
 
     // Return null in case of an error
     return null;
