@@ -1,25 +1,19 @@
 console.log('Executing User.js findOne');
 
+const { sanitizeEntity } = require("strapi-utils");
+
 module.exports = {
-    async findOne(ctx) {
-      const { id } = ctx.params;
-      const user = await strapi.plugins['users-permissions'].services.user.fetch({
-        id,
-      });
+  async me(ctx) {
+    const user = ctx.state.user;
 
-      if (!user) {
-        return ctx.notFound('User not found');
-      }
+    if (!user) {
+      return ctx.badRequest(null, [{ messages: [{ id: "No authorization header was found" }] }]);
+    }
 
-      // Remove sensitive data
-      user.password = undefined;
-      user.resetPasswordToken = undefined;
+    const data = await strapi.plugins["users-permissions"].services.user.fetch({
+      id: user.id,
+    });
 
-      // Populate profileImage
-      const populatedUser = await strapi.plugins.upload.services.upload.populate([user], {
-        model: 'plugins::users-permissions.user',
-      });
-
-      return populatedUser[0];
-    },
-  };
+    ctx.send(sanitizeEntity(data, { model: strapi.query("user", "users-permissions").model }));
+  },
+};

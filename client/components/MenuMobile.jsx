@@ -5,9 +5,13 @@ import Logout from "./Logout";
 import { useRouter } from "next/router";
 const data = [
   { id: 1, name: "Home", url: "/" },
-  { id: 2, name: "About", url: "/about" },
-  { id: 3, name: "Categories", subMenu: true },
-  { id: 4, name: "Contact", url: "/contact" },
+  { id: 2, name: "Profile", url: "/profile" },
+  { id: 3, name: "Favorites", url: "/favorites" },
+  { id: 4, name: "Orders", url: "/order-history" },
+  { id: 5, name: "Categories", subMenu: true },
+  { id: 6, name: "Cart", url: "/cart" },
+  { id: 7, name: "Contact", url: "/contact" },
+  { id: 8, name: "About", url: "/about" },
 ];
 
 const subMenuData = [
@@ -77,16 +81,7 @@ const MenuMobile = ({
       })}
       <li className="py-4 px-5 border-b">
         {isLoggedIn ? (
-          <>
-            <li className="py-4 px-5 border-b">
-              <Link href="/order-history" onClick={() => setMobileMenu(false)}>
-                Orders
-              </Link>
-            </li>
-            <li className="py-4 px-5 border-b">
-              <Logout />
-            </li>
-          </>
+          <Logout />
         ) : (
           <button
             onClick={() => {

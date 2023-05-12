@@ -49,10 +49,31 @@ export const register = async (username, email, password) => {
 };
 
 export const login = async (identifier, password) => {
-  return await axios.post(`${API_URL}/api/auth/local`, {
-    identifier,
-    password,
-  });
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/local`,
+    {
+      identifier,
+      password,
+    }
+  );
+
+  // Fetch user data with profileImage
+  const userResponse = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/${response.data.user.id}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  // Return the user and jwt token
+  return {
+    data: {
+      jwt: response.data.jwt,
+      user: userResponse.data,
+    },
+  };
 };
 
 export const logout = () => {

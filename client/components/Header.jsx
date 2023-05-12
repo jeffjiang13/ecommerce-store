@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Wrapper from "./Wrapper";
-import Login from "./Login";
-import Register from "./Register";
+
 import Logout from "./Logout";
 import Link from "next/link";
 import Menu from "./Menu";
 import MenuMobile from "./MenuMobile";
-import { FaUserCircle } from "react-icons/fa";
 
 import { IoMdHeartEmpty } from "react-icons/io";
 import { BsCart } from "react-icons/bs";
@@ -140,7 +138,7 @@ const Header = () => {
               </div>
               <div
                 className={`origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-opacity duration-300 ${
-                  showAccountDropdown ? "opacity-100" : "opacity-0 invisible"
+                  showAccountDropdown ? "opacity-100 z-50" : "opacity-0 invisible"
                 }`}
               >
                 <h2 className="font-bold ml-2">Account</h2>

@@ -8,7 +8,7 @@ import {
   clearMessage,
   setUser,
 } from "../store/authSlice";
-import axios from 'axios';
+import axios from "axios";
 
 // src/actions/authActions.js
 export const registerUser = (username, email, password) => async (dispatch) => {
@@ -39,49 +39,53 @@ export const registerUser = (username, email, password) => async (dispatch) => {
   }
 };
 
-
-
 // src/actions/authActions.js
-export const loginUser = ({ identifier, password }) => async (dispatch) => {
-  try {
-    const response = await login(identifier, password);
-    localStorage.setItem("token", response.data.jwt);
-    dispatch(loginSuccess(response.data.user));
+export const loginUser =
+  ({ identifier, password }) =>
+  async (dispatch) => {
+    try {
+      const response = await login(identifier, password);
+      localStorage.setItem("token", response.data.jwt);
+      dispatch(loginSuccess(response.data.user));
 
-    // Fetch user data after login
-    const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${response.data.user.id}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      // Fetch user data after login
+      const userResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/${response.data.user.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${response.data.jwt}`, // Add the Authorization header
+          },
+        }
+      );
 
-    console.log('userResponse.data:', userResponse.data); // Add this line to log the user data
+      console.log("userResponse.data:", userResponse.data); // Add this line to log the user data
+      console.log("response:", response); // Add this line to log the user data
 
-    // Add this line to include the profileImage in the setUser dispatch call
-    const updatedUser = { ...userResponse.data, profileImage: response.data.user.profileImage };
-    dispatch(setUser(updatedUser));
+      // Add this line to include the profileImage in the setUser dispatch call
+      const updatedUser = {
+        ...userResponse.data,
+        profileImage: userResponse.data.profileImage,
+      };
+      dispatch(setUser(updatedUser));
 
-    // Return the user and jwt token
-    return { user: updatedUser, jwt: response.data.jwt };
-  } catch (error) {
-    const message =
-      (error.response &&
-        error.response.data &&
-        error.response.data.error &&
-        error.response.data.error.message) ||
-      error.message ||
-      error.toString();
+      // Return the user and jwt token
+      return { user: updatedUser, jwt: response.data.jwt };
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.error &&
+          error.response.data.error.message) ||
+        error.message ||
+        error.toString();
 
-    dispatch(setMessage(message));
+      dispatch(setMessage(message));
 
-    // Return null in case of an error
-    return null;
-  }
-};
-
-
-
-
+      // Return null in case of an error
+      return null;
+    }
+  };
 
 export const logoutUser = () => (dispatch) => {
   localStorage.removeItem("token");
