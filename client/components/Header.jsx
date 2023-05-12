@@ -138,7 +138,9 @@ const Header = () => {
               </div>
               <div
                 className={`origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-opacity duration-300 ${
-                  showAccountDropdown ? "opacity-100 z-50" : "opacity-0 invisible"
+                  showAccountDropdown
+                    ? "opacity-100 z-50"
+                    : "opacity-0 invisible"
                 }`}
               >
                 <h2 className="font-bold ml-2">Account</h2>
@@ -184,10 +186,13 @@ const Header = () => {
         <div className="flex items-center gap-2 text-black">
           {/* Icon start */}
           <div className="w-8 md:w-12 h-8 md:h-12 rounded-full flex justify-center items-center hover:bg-black/[0.05] cursor-pointer relative">
-            <IoMdHeartEmpty className="text-[19px] md:text-[24px]" />
-            <div className="h-[14px] md:h-[18px] min-w-[14px] md:min-w-[18px] rounded-full bg-red-600 absolute top-1 left-5 md:left-7 text-white text-[10px] md:text-[12px] flex justify-center items-center px-[2px] md:px-[5px]">
+            <IoMdHeartEmpty
+              className="text-[19px] md:text-[24px]"
+              onClick={() => router.push("/favorites")}
+            />
+            {/* <div className="h-[14px] md:h-[18px] min-w-[14px] md:min-w-[18px] rounded-full bg-red-600 absolute top-1 left-5 md:left-7 text-white text-[10px] md:text-[12px] flex justify-center items-center px-[2px] md:px-[5px]">
               51
-            </div>
+            </div> */}
           </div>
           {/* Icon end */}
           {/* Icon start */}

@@ -191,7 +191,7 @@ const ProductDetails = ({ product, products }) => {
     className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
     onClick={() => addToFavorites(product?.data?.[0]?.id)}
 >
-    Wishlist
+    Favorite
     <IoMdHeartEmpty size={20} />
 </button>
 

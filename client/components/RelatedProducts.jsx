@@ -19,6 +19,7 @@ const RelatedProducts = ({ products }) => {
             items: 1,
         },
     };
+    console.log("products", products);
 
     return (
         <div className="mt-[50px] md:mt-[100px] mb-[100px] md:mb-0">
