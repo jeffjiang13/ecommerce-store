@@ -28,7 +28,7 @@ const OrderHistory = () => {
       {Array.isArray(filteredOrders) && filteredOrders.length > 0 ? (
         filteredOrders.map((order) => (
           <div key={order.id} className='order-box mb-4 p-4 bg-gray-200 rounded-lg shadow'>
-            <h3 className='mb-2'>{`Order ID: ${order.attributes.stripeId}`}</h3>
+            <h3 className='mb-2 md:mr-2 md:text-base text-center md:text-left overflow-hidden overflow-ellipsis whitespace-nowrap'>{`Order ID: ${order.attributes.stripeId}`}</h3>
             <ul>
               {order.attributes.products.map((product) => (
                 <li key={product.id}>
