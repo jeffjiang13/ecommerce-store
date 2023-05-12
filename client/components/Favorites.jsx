@@ -59,6 +59,8 @@ const Favorites = ({ p }) => {
       );
       // remove the product from local state as well
       setFavorites(favorites.filter((favorite) => favorite.id !== favoriteId));
+      window.location.reload();
+
       // Show a success toast
       toast.success("Product removed from favorites!", {
         position: "bottom-right",

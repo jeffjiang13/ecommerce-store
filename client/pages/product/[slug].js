@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import Wrapper from "@/components/Wrapper";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -20,6 +20,7 @@ const ProductDetails = ({ product, products }) => {
   const p = product?.data?.[0]?.attributes;
   const currentUser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   const notify = () => {
     toast.success("Success. Check your cart!", {
@@ -35,44 +36,46 @@ const ProductDetails = ({ product, products }) => {
   };
   const addToFavorites = async (itemId) => {
     try {
-        await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/favorites`,
-           {data: {
-                user: currentUser.id,
-                item: String(itemId),  // Convert item ID to string
-                userName: currentUser.username,
-            }},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
-        toast.success("Item added to favorites!", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-        });
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/favorites`,
+        {
+          data: {
+            user: currentUser.id,
+            item: String(itemId), // Convert item ID to string
+            userName: currentUser.username,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Item added to favorites!", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setIsFavorited(!isFavorited);
     } catch (error) {
-        console.error("Error adding to favorites:", error);
-        toast.error("Failed to add item to favorites.", {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-        });
+      console.error("Error adding to favorites:", error);
+      toast.error("Failed to add item to favorites.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
-};
-
+  };
 
   return (
     <div className="w-full md:py-20">
@@ -188,13 +191,16 @@ const ProductDetails = ({ product, products }) => {
 
             {/* WISHLIST BUTTON START */}
             <button
-    className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
-    onClick={() => addToFavorites(product?.data?.[0]?.id)}
->
-    Favorite
-    <IoMdHeartEmpty size={20} />
-</button>
-
+              className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
+              onClick={() => addToFavorites(product?.data?.[0]?.id)}
+            >
+              Favorite
+              {isFavorited ? (
+                <IoMdHeart size={20} />
+              ) : (
+                <IoMdHeartEmpty size={20} />
+              )}
+            </button>
 
             {/* WISHLIST BUTTON END */}
 
