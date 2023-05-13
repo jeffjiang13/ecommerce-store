@@ -33,7 +33,6 @@ const Profile = () => {
     }
   }, [userProfile, currentUser]);
 
-
   const fetchUserProfile = async () => {
     setIsLoading(true); // set loading to true at the beginning of the data fetch
     try {
@@ -47,7 +46,8 @@ const Profile = () => {
       if (foundProfile) {
         setUserProfile({
           ...foundProfile,
-          profileImage: foundProfile?.attributes?.profileImage.data.attributes.url,
+          profileImage:
+            foundProfile?.attributes?.profileImage.data.attributes.url,
         });
         setProfileId(foundProfile ? foundProfile.id : null);
       } else {
@@ -58,7 +58,6 @@ const Profile = () => {
       setIsLoading(false); // set loading to false if error occurs
     }
   };
-
 
   useEffect(() => {
     if (currentUser) {
@@ -172,71 +171,89 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto py-8">
-            {isLoading ? ( // Add this condition
+      {isLoading ? (
         <p>Loading...</p>
       ) : (
-      <div className="flex items-center">
-        <div className="w-40 h-40 border rounded-full overflow-hidden bg-gray-200">
-        <input
-            style={{ opacity: 0, position: "absolute", width: "100%", height: "100%", cursor: "pointer" }}
-            type="file"
-            accept="image/*"
-            onChange={handleProfileImageUpload}
-
-
-            />
-          {previewUrl ? (
-            <img
-              src={previewUrl}
-              alt="Profile"
-              className="w-full h-full object-cover"
-              width="170"
-              height="170"
-            />
-          ) : filteredProfile ? (
-            <img
-              src={filteredProfile.attributes?.profileImage.data.attributes.url}
-              alt="Profile"
-              className="w-full h-full object-cover"
-              width="170"
-              height="170"
-            />
-          ) : (
-            <AccountIcon />
-          )}
-        </div>
-        <div className="ml-6 flex flex-col justify-between">
-          <div>
-            <div className="mt-4">
-              <p className="font-semibold">Username:</p>
-              <p className=" text-3xl ">
-                {currentUser ? currentUser.username : "Not logged in"}
-              </p>
-            </div>
-            <div className="mt-4">
-              <p>
-                {" "}
-                Nike Member Since{" "}
-                {currentUser
-                  ? new Date(currentUser.createdAt).toLocaleString("en-US", {
-                      month: "long",
-                      year: "numeric",
-                    })
-                  : "Not logged in"}
-              </p>
-            </div>
+        <div className="flex items-center">
+          <div className="w-40 h-40 border rounded-full overflow-hidden bg-gray-200">
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <input
+                style={{
+                  opacity: 0,
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
+                }}
+                type="file"
+                accept="image/*"
+                onChange={handleProfileImageUpload}
+              />
+            {previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="Profile"
+                className="w-full h-full object-cover"
+                width="170"
+                height="170"
+              />
+            ) : filteredProfile ? (
+              <img
+                src={
+                  filteredProfile.attributes?.profileImage.data.attributes.url
+                }
+                alt="Profile"
+                className="w-full h-full object-cover"
+                width="170"
+                height="170"
+              />
+            ) : (
+              <AccountIcon />
+            )}
+              </div>
           </div>
-          <div>
-
-            {/* <button
+          <div className="ml-6 flex flex-col justify-between">
+            <div>
+              <div className="mt-4">
+                <p className="font-semibold">Username:</p>
+                <p className=" text-3xl ">
+                  {currentUser ? currentUser.username : "Not logged in"}
+                </p>
+              </div>
+              <div className="mt-4">
+                <p>
+                  {" "}
+                  Nike Member Since{" "}
+                  {currentUser
+                    ? new Date(currentUser.createdAt).toLocaleString("en-US", {
+                        month: "long",
+                        year: "numeric",
+                      })
+                    : "Not logged in"}
+                </p>
+              </div>
+            </div>
+            <div>
+              {/* <button
               onClick={handleProfileImageUpload}
               className="bg-black text-white px-4 py-2 rounded-full"
             >
               Upload
             </button> */}
+            </div>
           </div>
         </div>
-      </div>
       )}
     </div>
   );
