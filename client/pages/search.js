@@ -30,7 +30,7 @@ function SearchPage() {
   return (
     <div className="w-full md:py-20">
         <Wrapper>
-      <div className="mt-4">
+      <div className="mt-4 mb-4">
         Search results for
         <p className="text-3xl" >"{query}" </p>
       </div>

@@ -2,12 +2,13 @@
   import { useRouter } from 'next/router';
   import { useDispatch } from 'react-redux';
   import { logoutUser } from '../actions/authActions';
-
+  import { clearCart } from '@/store/cartSlice';
   const Logout = () => {
     const dispatch = useDispatch();
     const router = useRouter();
 
     const handleLogout = () => {
+      dispatch(clearCart());
 
       dispatch(logoutUser());
       router.push('/');

@@ -71,6 +71,9 @@ const Header = () => {
   const toggleAccountDropdown = () => {
     setShowAccountDropdown((prevState) => !prevState);
   };
+  useEffect(() => {
+    setShowAccountDropdown(false);
+  }, [currentUser]);
 
   return (
     <header
@@ -116,7 +119,7 @@ const Header = () => {
                 className="flex items-center cursor-pointer group-hover:text-gray-500 mr-3"
                 onClick={toggleAccountDropdown}
               >
-                <span className="mr-1">
+                <span className="mr-1 mt-1">
                   Hi,{" "}
                   {currentUser && currentUser.username
                     ? currentUser.username
