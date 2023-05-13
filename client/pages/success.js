@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Wrapper from "@/components/Wrapper";
 import Link from "next/link";
+import { useDispatch } from 'react-redux';
+import { clearCart } from '@/store/cartSlice';
 
 const Success = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        // Clear cart after successful payment
+        dispatch(clearCart());
+      }, [dispatch]);
     return (
         <div className="min-h-[650px] flex items-center">
             <Wrapper>

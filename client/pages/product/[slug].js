@@ -35,6 +35,20 @@ const ProductDetails = ({ product, products }) => {
     });
   };
   const addToFavorites = async (itemId) => {
+    if (!currentUser) {
+      toast.warn("Please log in to add products to favorites.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return;
+    }
+
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/favorites`,
@@ -191,16 +205,17 @@ const ProductDetails = ({ product, products }) => {
 
             {/* WISHLIST BUTTON START */}
             <button
-              className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
-              onClick={() => addToFavorites(product?.data?.[0]?.id)}
-            >
-              Favorite
-              {isFavorited ? (
-                <IoMdHeart size={20} />
-              ) : (
-                <IoMdHeartEmpty size={20} />
-              )}
-            </button>
+    className="w-full py-4 rounded-full border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 mb-10"
+    onClick={() => addToFavorites(product?.data?.[0]?.id)}
+>
+    {currentUser ? 'Favorite' : 'Log In to Favorite'}
+    {isFavorited ? (
+        <IoMdHeart size={20} />
+    ) : (
+        <IoMdHeartEmpty size={20} />
+    )}
+</button>
+
 
             {/* WISHLIST BUTTON END */}
 
