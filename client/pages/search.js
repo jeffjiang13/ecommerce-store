@@ -14,7 +14,6 @@ function SearchPage() {
   useEffect(() => {
     async function fetchData() {
       const data = await fetchItemsByQuery(query);
-      console.log(data)
       setItems(data);
       setLoading(false);
     }
@@ -27,8 +26,7 @@ function SearchPage() {
     );
     setFilteredItems({data:searchResults});
   }, [items, query]);
- console.log("items", items)
- console.log("filteredItems", filteredItems)
+
   return (
     <div className="w-full md:py-20">
         <Wrapper>
@@ -38,10 +36,9 @@ function SearchPage() {
       </div>
       {loading ? (
         <p className="mt-4 mb-4 text-center">Loading...</p>
-      ) : filteredItems.length > 0 ? (
-        <div>
-          {filteredItems?.data?.map((product) => (
-
+      ) : filteredItems.data.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {filteredItems.data.map((product) => (
             <ProductCard key={product.id} data={product} />
           ))}
         </div>

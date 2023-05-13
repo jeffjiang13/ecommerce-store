@@ -1,23 +1,38 @@
 import { API_URL, STRAPI_API_TOKEN } from "./urls";
 
-// utils/api.js
-export const fetchItemsByQuery = async (query) => {
-  try {
-    const response = await fetch(
-      `${API_URL}/api/products?populate=image&filter[name][$regex]=${encodeURIComponent(
-        query
-      )}&filter[name][$options]=i`,
-      {
-        method: "GET",
+export async function fetchItemsByQuery(query) {
+  const response = await fetch(
+    `${API_URL}/api/products?populate=image&filter[name][$regex]=${encodeURIComponent(
+      query
+    )}&filter[name][$options]=i`,
+    {
+      method: "GET",
+    }
+  );  const data = await response.json();
+  console.log("data",data); // Add this line
+
+  // Map through the items to include the thumbnail property
+  const itemsWithThumbnails = data.data.map(item => {
+    const thumbnailUrl = item.attributes.image.data.length > 0 ? item.attributes.image.data[0].attributes.url : null;
+
+    return {
+      ...item,
+      attributes: {
+        ...item.attributes,
+        thumbnail: {
+          data: {
+            attributes: {
+              url: thumbnailUrl
+            }
+          }
+        }
       }
-    );
-    const data = await response.json();
-    return data.data || [];
-  } catch (error) {
-    console.error("Error fetching items:", error);
-    return [];
-  }
-};
+    };
+  });
+
+  return itemsWithThumbnails;
+}
+
 
 
 export const fetchDataFromApi = async (endpoint) => {

@@ -14,7 +14,11 @@ export const cartSlice = createSlice({
                 item.quantity++;
                 item.attributes.price = item.oneQuantityPrice * item.quantity;
             } else {
-                state.cartItems.push({ ...action.payload, quantity: 1 });
+                state.cartItems.push({
+                    ...action.payload,
+                    quantity: 1,
+                    oneQuantityPrice: action.payload.attributes.price  // Add this line
+                });
             }
         },
         updateCart: (state, action) => {
@@ -29,6 +33,7 @@ export const cartSlice = createSlice({
                 return p;
             });
         },
+
         removeFromCart: (state, action) => {
             state.cartItems = state.cartItems.filter(
                 (p) => p.id !== action.payload.id

@@ -6,6 +6,7 @@ import axios from "axios";
 // OrderHistory Component
 const OrderHistory = () => {
   const [orderHistory, setOrderHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);  // Add this line
   const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -13,8 +14,14 @@ const OrderHistory = () => {
   }, []);
 
   const fetchOrders = async () => {
+    setIsLoading(true);  // Start loading
     const { data } = await fetchDataFromApi("/api/orders?populate=*");
     setOrderHistory(data);
+    setIsLoading(false);  // End loading
+  }
+
+  if (isLoading) {  // Add this condition
+    return <div>Loading...</div>;
   }
 
   if (!currentUser) {

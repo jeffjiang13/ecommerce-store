@@ -9,6 +9,7 @@ const Profile = () => {
   const token = useSelector((state) => state.auth.token);
   const [selectedFile, setSelectedFile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Add this line
   const [previewUrl, setPreviewUrl] = useState(
     currentUser?.profileImage
       ? currentUser.profileImage.provider === "cloudinary"
@@ -28,11 +29,13 @@ const Profile = () => {
   useEffect(() => {
     if (userProfile?.attributes?.userName === currentUser?.username) {
       setFilteredProfile(userProfile);
+      setIsLoading(false); // Add this line
     }
   }, [userProfile, currentUser]);
 
 
   const fetchUserProfile = async () => {
+    setIsLoading(true); // set loading to true at the beginning of the data fetch
     try {
       const { data } = await fetchDataFromApi("/api/profiles?populate=*");
       console.log("data", data);
@@ -41,15 +44,21 @@ const Profile = () => {
         (profile) => profile?.attributes?.userName === currentUser.username
       );
 
-      setUserProfile({
-        ...foundProfile,
-        profileImage: foundProfile?.attributes?.profileImage.data.attributes.url,
-      });
-      setProfileId(foundProfile ? foundProfile.id : null);
+      if (foundProfile) {
+        setUserProfile({
+          ...foundProfile,
+          profileImage: foundProfile?.attributes?.profileImage.data.attributes.url,
+        });
+        setProfileId(foundProfile ? foundProfile.id : null);
+      } else {
+        setIsLoading(false); // set loading to false if no profile found
+      }
     } catch (error) {
       console.error("Error fetching profile:", error);
+      setIsLoading(false); // set loading to false if error occurs
     }
   };
+
 
   useEffect(() => {
     if (currentUser) {
@@ -163,6 +172,9 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto py-8">
+            {isLoading ? ( // Add this condition
+        <p>Loading...</p>
+      ) : (
       <div className="flex items-center">
         <div className="w-40 h-40 border rounded-full overflow-hidden bg-gray-200">
         <input
@@ -225,6 +237,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };
