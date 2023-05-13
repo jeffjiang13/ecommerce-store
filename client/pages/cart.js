@@ -27,6 +27,10 @@ const Cart = () => {
     }, [cartItems]);
 
 const handlePayment = async () => {
+    if (!loggedInUser) {
+        alert('Please log in to checkout.');
+        return;
+    }
     try {
         setLoading(true);
         const stripe = await stripePromise;
@@ -106,12 +110,13 @@ const handlePayment = async () => {
 
                                 {/* BUTTON START */}
                                 <button
-                                    className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75 flex items-center gap-2 justify-center"
-                                    onClick={handlePayment}
-                                >
-                                    Checkout
-                                    {loading && <img src="/spinner.svg" />}
-                                </button>
+    className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-3 hover:opacity-75 flex items-center gap-2 justify-center"
+    onClick={handlePayment}
+>
+    {loggedInUser ? 'Checkout' : 'Log In to Checkout'}
+    {loading && <img src="/spinner.svg" />}
+</button>
+
                                 {/* BUTTON END */}
                             </div>
                             {/* SUMMARY END */}
