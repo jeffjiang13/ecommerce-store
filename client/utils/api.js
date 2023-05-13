@@ -1,5 +1,25 @@
 import { API_URL, STRAPI_API_TOKEN } from "./urls";
 
+// utils/api.js
+export const fetchItemsByQuery = async (query) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/products?populate=image&filter[name][$regex]=${encodeURIComponent(
+        query
+      )}&filter[name][$options]=i`,
+      {
+        method: "GET",
+      }
+    );
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error("Error fetching items:", error);
+    return [];
+  }
+};
+
+
 export const fetchDataFromApi = async (endpoint) => {
     const options = {
       method: "GET",

@@ -24,9 +24,20 @@ const Header = () => {
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const currentUser = useSelector((state) => state.auth.user);
   const [dropdownTimer, setDropdownTimer] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { cartItems } = useSelector((state) => state.cart);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    router.push(`/search?query=${searchTerm}`);
+  };
 
   const controlNavbar = () => {
     if (window.scrollY > 200) {
@@ -185,6 +196,15 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-2 text-black">
           {/* Icon start */}
+          <form onSubmit={handleSearchSubmit}>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+            placeholder="Search..."
+            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          />
+        </form>
           <div className="w-8 md:w-12 h-8 md:h-12 rounded-full flex justify-center items-center hover:bg-black/[0.05] cursor-pointer relative">
             <IoMdHeartEmpty
               className="text-[19px] md:text-[24px]"

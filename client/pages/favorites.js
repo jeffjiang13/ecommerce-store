@@ -12,6 +12,7 @@ const favorites = () => {
         </h1>{" "}
         <Favorites />
       </Wrapper>
+      <br />
     </div>
   );
 };
