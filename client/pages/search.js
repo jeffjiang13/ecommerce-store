@@ -32,7 +32,7 @@ function SearchPage() {
         <Wrapper>
       <div className="mt-4 mb-4">
         Search results for
-        <p className="text-3xl" >"{query}" </p>
+        <p className="text-3xl" >{query} ({filteredItems.data.length})</p>
       </div>
       {loading ? (
         <p className="mt-4 mb-4 text-center">Loading...</p>
