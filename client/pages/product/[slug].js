@@ -36,26 +36,31 @@ const ProductDetails = ({ product, products }) => {
   };
   const addToFavorites = async (itemId) => {
     if (!currentUser) {
-      toast.warn("Please log in to add products to favorites.", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.warn("Please log in to add products to favorites.", toastOptions);
       return;
     }
 
     try {
-      await axios.post(
+      const favoritesData = await fetchDataFromApi(`/api/favorites`);
+      const favoritesArray = favoritesData.data;
+
+      const isAlreadyFavorited = favoritesArray.some(
+        (favorite) =>
+          String(favorite.attributes.item) === String(itemId) &&
+          String(favorite.attributes.userName) === String(currentUser.username)
+      );
+
+      if (isAlreadyFavorited) {
+        toast.warn("This item is already in your favorites.", toastOptions);
+        return;
+      }
+
+      const addResponse = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/favorites`,
         {
           data: {
             user: currentUser.id,
-            item: String(itemId), // Convert item ID to string
+            item: String(itemId),
             userName: currentUser.username,
           },
         },
@@ -65,31 +70,30 @@ const ProductDetails = ({ product, products }) => {
           },
         }
       );
-      toast.success("Item added to favorites!", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      setIsFavorited(!isFavorited);
+
+      if (addResponse.status !== 200) {
+        throw new Error('Failed to add to favorites');
+      }
+
+      toast.success("Item added to favorites!", toastOptions);
+      setIsFavorited(true);
     } catch (error) {
       console.error("Error adding to favorites:", error);
-      toast.error("Failed to add item to favorites.", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.error("Failed to add item to favorites.", toastOptions);
     }
   };
+
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+  };
+
 
   return (
     <div className="w-full md:py-20">
