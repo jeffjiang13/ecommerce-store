@@ -57,10 +57,10 @@ The Nike Store isn't merely a shopping platform – it's a space where quality m
 :heavy_check_mark: Responsive Stripe checkout;\
 :heavy_check_mark: Responsive product catalog;\
 :heavy_check_mark: Contact page with email address;\
-:heavy_check_mark: About page with store information;
-:heavy_check_mark: Favorites page with working favorites still save even after logging out;
-:heavy_check_mark: Order history page;
-:heavy_check_mark: Profile page with ability to handle upload of profile image;
+:heavy_check_mark: About page with store information;\
+:heavy_check_mark: Favorites page with working favorites still save even after logging out;\
+:heavy_check_mark: Order history page;\
+:heavy_check_mark: Profile page with ability to handle upload of profile image;\
 
 ## :rocket: Technologies ##
 
