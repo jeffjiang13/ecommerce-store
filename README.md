@@ -6,7 +6,7 @@
 
   &#xa0;
 
-  <img src="client/public/porttfolio6.png" alt="Ecommerce-store" />
+  <img src="client/public/portfolio6.png" alt="Ecommerce-store" />
 
   <a href="https://jj-ecommerce-store.vercel.app/">Demo</a>
 </div>
